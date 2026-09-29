@@ -1,0 +1,17 @@
+{
+  "name": "Mi Biblioteca",
+  "short_name": "Biblioteca",
+  "description": "Lector de libros personal: importa tus PDF y léelos con fondo, letra y marcadores a tu gusto.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#050505",
+  "theme_color": "#050505",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

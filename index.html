@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Mi Biblioteca</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#050505">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Biblioteca">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ============== PANTALLA: BIBLIOTECA ============== -->
+<div id="screen-library">
+  <div id="lib-header">
+    <h1>Mi Biblioteca</h1>
+    <button id="btn-open-settings" class="icon-btn" aria-label="Ajustes de lectura" title="Ajustes de lectura">⚙</button>
+  </div>
+  <div id="lib-grid"></div>
+  <div id="lib-empty" class="hidden">
+    <p>Todavía no tienes libros. Toca el botón + para importar tu primer PDF.</p>
+  </div>
+  <button id="fab-add" aria-label="Agregar libro" title="Agregar libro">+</button>
+  <input id="file-input" type="file" accept="application/pdf" class="hidden">
+</div>
+
+<!-- Progreso de importación -->
+<div id="import-progress" class="hidden">
+  <div class="box">
+    <div>Preparando tu libro…</div>
+    <p id="import-progress-text">Analizando el PDF</p>
+    <div class="bar"><div id="import-progress-fill" class="bar-fill"></div></div>
+  </div>
+</div>
+
+<!-- Ajustes de lectura (tema) -->
+<div id="settings-overlay" class="sheet-overlay hidden">
+  <div class="sheet">
+    <h3>Apariencia de lectura</h3>
+
+    <div class="row" style="display:block;">
+      <div class="row-label" style="margin-bottom:8px;">Color de fondo</div>
+      <div class="swatches" id="bg-swatches">
+        <div class="swatch" data-bg="#050505" data-text="#e9e6df" style="background:#050505;"></div>
+        <div class="swatch" data-bg="#1b1b1b" data-text="#e9e6df" style="background:#1b1b1b;"></div>
+        <div class="swatch" data-bg="#efe6d3" data-text="#2b2416" style="background:#efe6d3;"></div>
+        <div class="swatch" data-bg="#ffffff" data-text="#161616" style="background:#ffffff;"></div>
+        <div class="swatch" data-bg="#0b1a12" data-text="#dfe9df" style="background:#0b1a12;"></div>
+      </div>
+      <div class="color-input-row" style="margin-top:12px;">
+        <input type="color" id="custom-bg" value="#050505">
+        <span style="font-size:12px;color:var(--app-text-dim);">Personalizado</span>
+      </div>
+    </div>
+
+    <div class="row" style="display:block;">
+      <div class="row-label" style="margin-bottom:8px;">Tipografía</div>
+      <div class="opt-group" id="font-family-group">
+        <button class="opt-btn" data-font="Georgia, 'Iowan Old Style', 'Palatino Linotype', serif">Serif</button>
+        <button class="opt-btn" data-font="-apple-system, 'Segoe UI', Roboto, Arial, sans-serif">Sans</button>
+        <button class="opt-btn" data-font="'Courier New', monospace">Monoespaciada</button>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="row-label">Tamaño de letra</div>
+      <div class="stepper">
+        <button id="set-font-minus">A−</button>
+        <div class="val" id="set-font-val">100%</div>
+        <button id="set-font-plus">A+</button>
+      </div>
+    </div>
+
+    <button id="btn-close-settings" class="opt-btn" style="width:100%;margin-top:6px;">Listo</button>
+  </div>
+</div>
+
+<!-- ============== PANTALLA: LECTOR ============== -->
+<div id="screen-reader" class="hidden">
+  <header id="reader-top" class="chrome">
+    <button id="btn-back-library" class="icon-btn" aria-label="Volver a la biblioteca" title="Volver">←</button>
+    <div id="reader-title">Título</div>
+    <button id="btn-open-index" class="icon-btn" aria-label="Índice y marcadores" title="Índice y marcadores">☰</button>
+  </header>
+
+  <main id="viewport">
+    <div id="stage">
+      <div id="page-under" class="page-slot"></div>
+      <div id="leaf" class="leaf">
+        <div id="leaf-front" class="leaf-face leaf-front page-slot"></div>
+        <div id="leaf-back" class="leaf-face leaf-back"></div>
+        <div id="leaf-shadow" class="leaf-shadow"></div>
+      </div>
+    </div>
+    <button id="tap-prev" class="tap-zone" aria-label="Página anterior"></button>
+    <button id="tap-next" class="tap-zone" aria-label="Página siguiente"></button>
+  </main>
+
+  <footer id="reader-bottom" class="chrome">
+    <button id="btn-bookmark-here" class="icon-btn" aria-label="Marcar esta página" title="Marcar esta página">☆</button>
+    <div id="progress-wrap">
+      <input id="progress-slider" type="range" min="0" max="1" step="1" value="0" aria-label="Ir a página">
+      <div id="page-indicator">Página 1 / 1</div>
+    </div>
+    <button id="btn-fullscreen" class="icon-btn" aria-label="Pantalla completa" title="Pantalla completa">⛶</button>
+  </footer>
+
+  <div id="zoom-float">
+    <button id="zoom-out" class="zoom-btn" aria-label="Reducir letra" title="Reducir letra">A−</button>
+    <button id="zoom-in" class="zoom-btn" aria-label="Aumentar letra" title="Aumentar letra">A+</button>
+  </div>
+
+  <!-- Índice / marcadores -->
+  <div id="side-overlay" class="overlay hidden">
+    <div id="side-panel">
+      <div id="side-header">
+        <h2>Este libro</h2>
+        <button id="btn-side-close" class="icon-btn" aria-label="Cerrar">✕</button>
+      </div>
+      <div id="side-tabs">
+        <button class="side-tab active" data-tab="toc">Índice</button>
+        <button class="side-tab" data-tab="marks">Marcadores</button>
+      </div>
+      <div id="side-content">
+        <div id="tab-toc"></div>
+        <div id="tab-marks" class="hidden">
+          <button id="btn-add-bookmark">＋ Marcar página actual</button>
+          <div id="marks-list"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Medidor invisible usado para paginar el texto -->
+<div id="measurer" aria-hidden="true"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+  if (window.pdfjsLib) {
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+      "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+  }
+</script>
+<script src="js/db.js"></script>
+<script src="js/pdf-extract.js"></script>
+<script src="js/paginator.js"></script>
+<script src="js/page-turn.js"></script>
+<script src="js/reader.js"></script>
+<script src="js/library.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
