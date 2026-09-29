@@ -32,7 +32,7 @@ html, body{
 body{
   font-family: Georgia, "Iowan Old Style", "Palatino Linotype", "Book Antiqua", serif;
   overflow: hidden;
-  touch-action: pan-y compute;
+  touch-action: none;
 }
 button{ font-family: inherit; }
 
