@@ -23,8 +23,11 @@
 }
 *{ box-sizing: inherit; -webkit-tap-highlight-color: transparent; }
 html, body{ height: 100%; margin: 0; background: var(--app-bg); color: var(--app-text); overscroll-behavior: none; }
-body{ font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif; overflow: hidden; 
-touch-action: none;}
+body{
+  font-family: Georgia, "Iowan Old Style", "Palatino Linotype", "Book Antiqua", serif;
+  overflow: hidden;
+  touch-action: none;
+}
 button{ font-family: inherit; }
 
 .hidden{ display: none !important; }
